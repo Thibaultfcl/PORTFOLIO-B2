@@ -29,6 +29,7 @@ func main() {
 	http.HandleFunc("/admin", func(w http.ResponseWriter, r *http.Request) { functions.Admin(w, r, db) })
 	http.HandleFunc("/editProjects", func(w http.ResponseWriter, r *http.Request) { functions.EditProjects(w, r, db) })
 	http.HandleFunc("/editPersonal", func(w http.ResponseWriter, r *http.Request) { functions.EditPersonal(w, r, db) })
+	http.HandleFunc("/updateUserInfo", func(w http.ResponseWriter, r *http.Request) { functions.UpdateUserInfo(w, r, db) })
 
 	//load the CSS, the JS and the images
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css"))))
