@@ -1,1 +1,5 @@
 # PORTFOLIO-B2
+
+Noble Robin
+MONGORIN SEMEDO BRITO Luidjy
+FRESCALINE Thibault
