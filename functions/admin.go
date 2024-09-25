@@ -50,14 +50,22 @@ func EditPersonal(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 }
 
 func EditProjects(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	projectData := ProjectData{}
-	row := db.QueryRow("SELECT title, description, link FROM projects")
-	err := row.Scan(&projectData.Title, &projectData.Description, &projectData.Link)
+	var projectData []ProjectData
+	rows, err := db.Query("SELECT title, description, link FROM projects")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
 		return
 	}
-
+	defer rows.Close()
+	for rows.Next() {
+		var project ProjectData
+		err := rows.Scan(&project.Title, &project.Description, &project.Link)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
+			return
+		}
+		projectData = append(projectData, project)
+	}
 	tmpl, err := template.ParseFiles("tmpl/editProjects.html")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
