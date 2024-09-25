@@ -21,11 +21,15 @@ func main() {
 
 	//create the tables
 	functions.CreateTable(db)
+	functions.SetUserDefault(db)
+	functions.SetProjectsDefault(db)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { functions.Index(w, r) })
-	http.HandleFunc("/admin", func(w http.ResponseWriter, r *http.Request) { functions.Admin(w, r, db) })
-	http.HandleFunc("/nav", func(w http.ResponseWriter, r *http.Request) { functions.Nav(w, r) })
 	
+	http.HandleFunc("/admin", func(w http.ResponseWriter, r *http.Request) { functions.Admin(w, r, db) })
+	http.HandleFunc("/editProjects", func(w http.ResponseWriter, r *http.Request) { functions.EditProjects(w, r, db) })
+	http.HandleFunc("/editPersonal", func(w http.ResponseWriter, r *http.Request) { functions.EditPersonal(w, r, db) })
+
 	//load the CSS, the JS and the images
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css"))))
 	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./img"))))
