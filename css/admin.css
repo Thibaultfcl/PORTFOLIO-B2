@@ -1,0 +1,19 @@
+#admin {
+    padding-top: 10rem;
+    background-color: aliceblue;
+    color: #000000;
+    width: 100%;
+    height: 100vh;
+}
+
+#admin .row {
+    padding-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+#admin .card:hover {
+    scale: 1.05;
+    transition: 0.5s ease;
+    cursor: pointer;
+}

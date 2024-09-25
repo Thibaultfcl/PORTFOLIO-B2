@@ -1,20 +1,19 @@
 package functions
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+	"io"
+	"os"
+)
 
 func CreateTableUser(db *sql.DB) {
 	//creating the user table if not already created
 	_, err := db.Exec(`
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+        CREATE TABLE IF NOT EXISTS user (
             username VARCHAR(12) NOT NULL,
-            password VARCHAR(12) NOT NULL,
 			email TEXT NOT NULL,
-			isAdmin BOOL NOT NULL DEFAULT FALSE,
-			isModerator BOOL NOT NULL DEFAULT FALSE,
-			isBanned BOOL NOT NULL DEFAULT FALSE,
-			pp BLOB,
-			UUID VARCHAR(36) NOT NULL
+			pp BLOB
         )
     `)
 	if err != nil {
@@ -22,6 +21,54 @@ func CreateTableUser(db *sql.DB) {
 	}
 }
 
+func CreateTableProjects(db *sql.DB) {
+	//creating the projects table if not already created
+	_, err := db.Exec(`
+		CREATE TABLE IF NOT EXISTS projects (
+			title TEXT NOT NULL,
+			description TEXT NOT NULL,
+			link TEXT NOT NULL
+		)
+	`)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+func SetUserDefault(db *sql.DB) error {
+	//open the default profile picture
+	file, err := os.Open("img/profileDefault.jpg")
+	if err != nil {
+		return fmt.Errorf("error opening image: %v", err)
+	}
+	defer file.Close()
+
+	//read the image
+	ppDefault, err := io.ReadAll(file)
+	if err != nil {
+		return fmt.Errorf("error reading image: %v", err)
+	}
+
+	//insert the admin account in the database
+	_, err = db.Exec("INSERT INTO user (username, email, pp) VALUES (?, ?, ?)", "user", "user@email.com", ppDefault)
+	if err != nil {
+		return fmt.Errorf("error while creating the user account: %v", err)
+	}
+
+	return nil
+}
+
+func SetProjectsDefault(db *sql.DB) error {
+	//insert the default projects in the database
+	_, err := db.Exec("INSERT INTO projects (title, description, link) VALUES (?, ?, ?)", "project", "description", "link")
+	if err != nil {
+		return fmt.Errorf("error while creating the projects: %v", err)
+	}
+
+	return nil
+}
+
 func CreateTable(db *sql.DB) {
 	CreateTableUser(db)
+	CreateTableProjects(db)
 }
