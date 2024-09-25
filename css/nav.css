@@ -13,6 +13,7 @@
 body {
     font-family: "Poppins", sans-serif;
     color: #fff;
+    background-image: url("../img/wallpaper.webp");
 }
 
 body.index {
