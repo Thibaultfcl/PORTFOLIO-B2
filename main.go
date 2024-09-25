@@ -23,7 +23,9 @@ func main() {
 	functions.CreateTable(db)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { functions.Index(w, r) })
-
+	http.HandleFunc("/admin", func(w http.ResponseWriter, r *http.Request) { functions.Admin(w, r, db) })
+	http.HandleFunc("/nav", func(w http.ResponseWriter, r *http.Request) { functions.Nav(w, r) })
+	
 	//load the CSS, the JS and the images
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("./css"))))
 	http.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir("./img"))))
