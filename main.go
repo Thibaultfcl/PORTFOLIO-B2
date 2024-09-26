@@ -29,7 +29,9 @@ func main() {
 	http.HandleFunc("/contact", func(w http.ResponseWriter, r *http.Request) { functions.Contact(w, r) })
 	http.HandleFunc("/admin", func(w http.ResponseWriter, r *http.Request) { functions.Admin(w, r, db) })
 	http.HandleFunc("/editProjects", func(w http.ResponseWriter, r *http.Request) { functions.EditProjects(w, r, db) })
+	http.HandleFunc("/createNewProject", func(w http.ResponseWriter, r *http.Request) { functions.CreateNewProject(w, r, db) })
 	http.HandleFunc("/editPersonal", func(w http.ResponseWriter, r *http.Request) { functions.EditPersonal(w, r, db) })
+	http.HandleFunc("/updateProjects", func(w http.ResponseWriter, r *http.Request) { functions.UpdateProjects(w, r, db) })
 	http.HandleFunc("/updateUserInfo", func(w http.ResponseWriter, r *http.Request) { functions.UpdateUserInfo(w, r, db) })
 
 	//load the CSS, the JS and the images
