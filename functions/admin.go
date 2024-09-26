@@ -76,6 +76,21 @@ func EditProjects(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 }
 
+func CreateNewProject(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	_, err := db.Exec("INSERT INTO projects (title, description, link) VALUES (?, ?, ?)", "", "", "")
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error creating a new project: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/editProjects", http.StatusSeeOther)
+}
+
 func UpdateUserInfo(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -127,5 +142,59 @@ func UpdateUserInfo(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		}
 	}
 
-	http.Redirect(w, r, "/admin", http.StatusSeeOther)
+	http.Redirect(w, r, "/editPersonal", http.StatusSeeOther)
+}
+
+func UpdateProjects(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	err := r.ParseMultipartForm(10 << 20)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error parsing form: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	file, _, err := r.FormFile("profilePicture")
+	if err != nil {
+		if err != http.ErrMissingFile {
+			http.Error(w, fmt.Sprintf("Error retrieving the file: %v", err), http.StatusInternalServerError)
+			return
+		}
+	}
+	if file != nil {
+		defer file.Close()
+		fileBytes, err := io.ReadAll(file)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error reading the file: %v", err), http.StatusInternalServerError)
+			return
+		}
+		_, err = db.Exec("UPDATE user SET pp=?", fileBytes)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error updating the profile picture: %v", err), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	username := r.FormValue("username")
+	if username != "" {
+		_, err = db.Exec("UPDATE user SET username=?", username)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error updating the username: %v", err), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	email := r.FormValue("email")
+	if email != "" {
+		_, err = db.Exec("UPDATE user SET email=?", email)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error updating the email: %v", err), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	http.Redirect(w, r, "/editProjects", http.StatusSeeOther)
 }

@@ -17,38 +17,48 @@
     <div class="container mt-5">
         <h2 class="mb-4">Edit Projects Data</h2>
 
-        <div class="row mb-4">
+        <div class="row mb-4" id="projectCards">
             {{range .}}
-            <div class="col-md-4 mb-3">
+            <div class="col-md-2 mb-3">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">{{.Title}}</h5>
                         <p class="card-text">{{.Description}}</p>
-                        <a href="{{.Link}}" class="btn btn-primary">Go to project</a>
+                        <button class="btn btn-primary select-project" 
+                                data-title="{{.Title}}" 
+                                data-description="{{.Description}}" 
+                                data-link="{{.Link}}">
+                            Edit Project
+                        </button>
                     </div>
                 </div>
             </div>
             {{end}}
+            <div class="col-md-2 mb-3 d-flex align-items-center justify-content-center">
+                <form action="/createNewProject" method="post">
+                    <button type="submit" class="btn btn-primary">+</button>
+                </form>
+            </div>
         </div>
 
-        {{range .}}
-        <form action="/updateProjectInfo" method="post">
+        <form id="editProjectForm" action="/updateProjectInfo" method="post" style="display: none;">
             <div class="mb-3">
                 <label for="title" class="form-label">Title :</label>
-                <input type="text" class="form-control" id="title" name="title" value="{{.Title}}">
+                <input type="text" class="form-control" id="title" name="title">
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label">Description :</label>
-                <textarea class="form-control" id="description" name="description" rows="3">{{.Description}}</textarea>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
             </div>
             <div class="mb-3">
                 <label for="link" class="form-label">Link :</label>
-                <input type="url" class="form-control" id="link" name="link" value="{{.Link}}">
+                <input type="url" class="form-control" id="link" name="link">
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
-        {{end}}
     </div>
+
+    <script src="../script/editProject.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>
