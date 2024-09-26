@@ -71,6 +71,33 @@ a:hover {
   display: none;
 }
 
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 20px; /* Space between rows */
+}
+
+.col-md-4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.square {
+  width: 80%; /* Adjust the size as needed */
+  padding-bottom: 80%; /* This makes the div a square */
+  background-color: #ccc; /* Change this to your desired color */
+  margin: 10px; /* Space between squares */
+}
 @media (max-width: 1050px) {
   label.logo {
     padding-left: 30px;

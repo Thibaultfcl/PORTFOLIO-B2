@@ -25,7 +25,7 @@ func main() {
 	functions.SetProjectsDefault(db)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { functions.Index(w, r) })
-	http.HandleFunc("/projet", func(w http.ResponseWriter, r *http.Request) { functions.Projet(w, r) })
+	http.HandleFunc("/projet", func(w http.ResponseWriter, r *http.Request) { functions.Projet(w, r, db) })
 	http.HandleFunc("/contact", func(w http.ResponseWriter, r *http.Request) { functions.Contact(w, r) })
 	http.HandleFunc("/admin", func(w http.ResponseWriter, r *http.Request) { functions.Admin(w, r, db) })
 	http.HandleFunc("/editProjects", func(w http.ResponseWriter, r *http.Request) { functions.EditProjects(w, r, db) })
