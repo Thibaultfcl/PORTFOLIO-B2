@@ -19,9 +19,15 @@ body {
 }
 
 nav {
-  background: #3a89c500;
+  background-image: url('../img/wallpaper.webp');
+  background-size: cover ;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   height: 80px;
   width: 100%;
+  position: fixed;
+  top: 0;
 }
 
 label.logo {
@@ -80,6 +86,16 @@ a:hover {
   display: none;
 }
 
+.txt{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%; /* Ensure it doesn't exceed the page width */
+  height: 100vh; /* Ensure it takes the full viewport height */
+  overflow: hidden; /* Prevent scrolling */
+}
+
 .container {
     display: flex;
     justify-content: center;
@@ -131,6 +147,7 @@ a:hover {
     left: 50%;
     transform: translateX(-50%);
   }
+  
 @media (max-width: 1050px) {
   label.logo {
     padding-left: 30px;
@@ -142,6 +159,8 @@ a:hover {
   }
 }
 
+
+
 /* Responsive media query code for small screen */
 @media (max-width: 890px) {
   .checkbtn {
@@ -151,6 +170,14 @@ a:hover {
   label.logo {
     font-size: 22px;
   }
+  .txt {
+    margin-top: 60px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  
 
   ul {
     position: fixed;
