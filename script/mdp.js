@@ -1,0 +1,1 @@
+var mdpBg = document.getElementById('mdp');
