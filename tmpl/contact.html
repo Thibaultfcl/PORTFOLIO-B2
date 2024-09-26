@@ -12,13 +12,10 @@
 <body>
   <nav>
     <input type="checkbox" id="check">
-
     <label for="check" class="checkbtn">
       <i class="fas fa-bars"></i>
     </label>
-
     <label class="logo">Portfolio</label>
-
     <ul>
       <li><a href="/index">Home</a></li>
       <li><a href="/projet">Project</a></li>
@@ -27,7 +24,32 @@
     </ul>
   </nav>
 
-  <section></section>
+  <section>
+    <div class="container">
+      {{if .User.pp}}
+        {{.User.pp}}
+      {{end}}
+
+      <div class="container" style='font-family: "Montserrat", sans-serif;'>
+        <h2>Welcome, strangers</h2>
+        <h3>
+          Vous avez aimé mon travail ou souhaitez en savoir plus sur mes projets ? N’hésitez pas à me contacter !<br>
+          Je suis toujours ravi d'échanger autour de nouvelles idées, de collaborations créatives ou simplement de recevoir vos retours.<br>
+          Vous pouvez me joindre via le formulaire ci-dessous ou en utilisant mes coordonnées.<br>
+          Je serai heureux de vous répondre dès que possible.
+        </h3>
+      </div>
+
+      <div class="container" style='font-family: "Montserrat", sans-serif;'>
+        <h2>Coordonnées :</h2><br><br>
+        <h3>Email : {{.User.Email}}</h3><br><br>
+        {{if .User.Numero}}
+          <h3>Numéro : {{.User.Numero}}</h3><br><br>
+        {{end}}
+        <h3>Merci de votre visite et à bientôt !</h3><br><br>
+      </div>
+    </div>
+  </section>
 </body>
 
 </html>
