@@ -36,9 +36,9 @@
         {{range $index, $project := .}}
           <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="square">
-              <h3>{{$project.Title}}</h3>
-              <p>{{$project.Description}}</p>
-              <a href="{{$project.Link}}">Voir le projet</a>
+              <h3 class="project-title">{{$project.Title}}</h3>
+              <p classe="description">{{$project.Description}}</p>
+              <a classe="link" href="{{$project.Link}}">Voir le projet</a>
             </div>
           </div>
           {{if eq (mod (add $index 1) 3) 0}}

@@ -72,32 +72,56 @@ a:hover {
 }
 
 .container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
 
-.row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 20px; /* Space between rows */
-}
+  .row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+  }
 
-.col-md-4 {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  .col-md-4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px; /* Space between columns */
+  }
 
-.square {
-  width: 80%; /* Adjust the size as needed */
-  padding-bottom: 80%; /* This makes the div a square */
-  background-color: #ccc; /* Change this to your desired color */
-  margin: 10px; /* Space between squares */
-}
+  .square {
+    width: 100%; /* Full width within the column */
+    padding-bottom: 100%; /* This makes the div a square */
+    background-color: #ccc; /* Change this to your desired color */
+    border-radius: 15px; /* Rounded corners */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    padding: 20px;
+  }
+
+  .project-title {
+    margin: 0;
+    padding-top: 10px; /* Adjust as needed */
+  }
+
+  .description {
+    margin: 10px 0; /* Adjust as needed */
+  }
+
+  .link {
+    position: absolute;
+    bottom: 10px; /* Adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+  }
 @media (max-width: 1050px) {
   label.logo {
     padding-left: 30px;
