@@ -26,6 +26,7 @@ func main() {
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { functions.Index(w, r) })
 	http.HandleFunc("/projet", func(w http.ResponseWriter, r *http.Request) { functions.Projet(w, r) })
+	http.HandleFunc("/contact", func(w http.ResponseWriter, r *http.Request) { functions.Contact(w, r) })
 	http.HandleFunc("/admin", func(w http.ResponseWriter, r *http.Request) { functions.Admin(w, r, db) })
 	http.HandleFunc("/editProjects", func(w http.ResponseWriter, r *http.Request) { functions.EditProjects(w, r, db) })
 	http.HandleFunc("/editPersonal", func(w http.ResponseWriter, r *http.Request) { functions.EditPersonal(w, r, db) })
