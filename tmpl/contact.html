@@ -25,11 +25,8 @@
   </nav>
 
   <section>
-    <div class="container txt" >
-      {{if .User.pp}}
-        {{.User.pp}}
-      {{end}}
-
+    <div class="container">
+      <img src="data:image/jpeg;base64,{{.ProfilePicture}}">
       <div class="container" style='font-family: "Montserrat", sans-serif;'>
         <h2>Welcome, strangers</h2>
         <h3>
@@ -42,10 +39,8 @@
 
       <div class="container" style='font-family: "Montserrat", sans-serif;'>
         <h2>Coordonnées :</h2><br><br>
-        <h3>Email : {{.User.Email}}</h3><br><br>
-        {{if .User.Numero}}
-          <h3>Numéro : {{.User.Numero}}</h3><br><br>
-        {{end}}
+        <h3>Email : {{.Email}}</h3><br><br>
+        
         <h3>Merci de votre visite et à bientôt !</h3><br><br>
       </div>
     </div>
