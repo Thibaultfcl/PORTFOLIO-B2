@@ -36,6 +36,17 @@ func CreateTableProjects(db *sql.DB) {
 }
 
 func SetUserDefault(db *sql.DB) error {
+	//check if the user account already exists
+	row := db.QueryRow("SELECT COUNT(*) FROM user")
+	var count int
+	err := row.Scan(&count)
+	if err != nil {
+		return fmt.Errorf("error while checking the user account: %v", err)
+	}
+	if count > 0 {
+		return nil
+	}
+
 	//open the default profile picture
 	file, err := os.Open("img/profileDefault.jpg")
 	if err != nil {
@@ -59,8 +70,19 @@ func SetUserDefault(db *sql.DB) error {
 }
 
 func SetProjectsDefault(db *sql.DB) error {
+	//check if the projects already exist
+	row := db.QueryRow("SELECT COUNT(*) FROM projects")
+	var count int
+	err := row.Scan(&count)
+	if err != nil {
+		return fmt.Errorf("error while checking the projects: %v", err)
+	}
+	if count > 0 {
+		return nil
+	}
+
 	//insert the default projects in the database
-	_, err := db.Exec("INSERT INTO projects (title, description, link) VALUES (?, ?, ?)", "project", "description", "link")
+	_, err = db.Exec("INSERT INTO projects (title, description, link) VALUES (?, ?, ?)", "project", "description", "link")
 	if err != nil {
 		return fmt.Errorf("error while creating the projects: %v", err)
 	}

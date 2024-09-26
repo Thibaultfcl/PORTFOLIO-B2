@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"html/template"
+	"io"
 	"log"
 	"net/http"
 )
@@ -49,14 +50,22 @@ func EditPersonal(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 }
 
 func EditProjects(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-	projectData := ProjectData{}
-	row := db.QueryRow("SELECT title, description, link FROM projects")
-	err := row.Scan(&projectData.Title, &projectData.Description, &projectData.Link)
+	var projectData []ProjectData
+	rows, err := db.Query("SELECT title, description, link FROM projects")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
 		return
 	}
-
+	defer rows.Close()
+	for rows.Next() {
+		var project ProjectData
+		err := rows.Scan(&project.Title, &project.Description, &project.Link)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
+			return
+		}
+		projectData = append(projectData, project)
+	}
 	tmpl, err := template.ParseFiles("tmpl/editProjects.html")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
@@ -65,4 +74,58 @@ func EditProjects(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	if err := tmpl.Execute(w, projectData); err != nil {
 		log.Printf("Error executing template: %v", err)
 	}
+}
+
+func UpdateUserInfo(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	err := r.ParseMultipartForm(10 << 20)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error parsing form: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	file, _, err := r.FormFile("profilePicture")
+	if err != nil {
+		if err != http.ErrMissingFile {
+			http.Error(w, fmt.Sprintf("Error retrieving the file: %v", err), http.StatusInternalServerError)
+			return
+		}
+	}
+	if file != nil {
+		defer file.Close()
+		fileBytes, err := io.ReadAll(file)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error reading the file: %v", err), http.StatusInternalServerError)
+			return
+		}
+		_, err = db.Exec("UPDATE user SET pp=?", fileBytes)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error updating the profile picture: %v", err), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	username := r.FormValue("username")
+	if username != "" {
+		_, err = db.Exec("UPDATE user SET username=?", username)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error updating the username: %v", err), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	email := r.FormValue("email")
+	if email != "" {
+		_, err = db.Exec("UPDATE user SET email=?", email)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error updating the email: %v", err), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	http.Redirect(w, r, "/admin", http.StatusSeeOther)
 }
