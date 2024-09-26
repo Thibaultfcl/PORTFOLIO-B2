@@ -78,7 +78,7 @@ func SetProjectsDefault(db *sql.DB) error {
 		return fmt.Errorf("error while checking the projects: %v", err)
 	}
 	if count > 0 {
-		return nil
+		return fmt.Errorf("projects already exist")
 	}
 
 	//insert the default projects in the database
