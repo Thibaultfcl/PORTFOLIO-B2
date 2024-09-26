@@ -16,6 +16,21 @@
 <body>
     <div class="container mt-5">
         <h2 class="mb-4">Edit Projects Data</h2>
+
+        <div class="row mb-4">
+            {{range .}}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{.Title}}</h5>
+                        <p class="card-text">{{.Description}}</p>
+                        <a href="{{.Link}}" class="btn btn-primary">Go to project</a>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+        </div>
+
         {{range .}}
         <form action="/updateProjectInfo" method="post">
             <div class="mb-3">
