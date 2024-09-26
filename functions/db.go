@@ -25,9 +25,11 @@ func CreateTableProjects(db *sql.DB) {
 	//creating the projects table if not already created
 	_, err := db.Exec(`
 		CREATE TABLE IF NOT EXISTS projects (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
 			title TEXT NOT NULL,
 			description TEXT NOT NULL,
-			link TEXT NOT NULL
+			link TEXT NOT NULL,
+			picture BLOB
 		)
 	`)
 	if err != nil {
@@ -81,8 +83,21 @@ func SetProjectsDefault(db *sql.DB) error {
 		return fmt.Errorf("projects already exist")
 	}
 
+	//open the default profile picture
+	file, err := os.Open("img/projectImg.jpg")
+	if err != nil {
+		return fmt.Errorf("error opening image: %v", err)
+	}
+	defer file.Close()
+
+	//read the image
+	PictureDefault, err := io.ReadAll(file)
+	if err != nil {
+		return fmt.Errorf("error reading image: %v", err)
+	}
+
 	//insert the default projects in the database
-	_, err = db.Exec("INSERT INTO projects (title, description, link) VALUES (?, ?, ?)", "project", "description", "link")
+	_, err = db.Exec("INSERT INTO projects (title, description, link, picture) VALUES (?, ?, ?, ?)", "project", "description", "link", PictureDefault)
 	if err != nil {
 		return fmt.Errorf("error while creating the projects: %v", err)
 	}

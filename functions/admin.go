@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
 type UserData struct {
@@ -17,9 +18,11 @@ type UserData struct {
 }
 
 type ProjectData struct {
+	Id          int
 	Title       string
 	Description string
 	Link        string
+	Picture     string
 }
 
 func Admin(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -51,7 +54,7 @@ func EditPersonal(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 
 func EditProjects(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	var projectData []ProjectData
-	rows, err := db.Query("SELECT title, description, link FROM projects")
+	rows, err := db.Query("SELECT id, title, description, link, picture FROM projects")
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
 		return
@@ -59,10 +62,14 @@ func EditProjects(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	defer rows.Close()
 	for rows.Next() {
 		var project ProjectData
-		err := rows.Scan(&project.Title, &project.Description, &project.Link)
+		var pictureByte []byte
+		err := rows.Scan(&project.Id, &project.Title, &project.Description, &project.Link, &pictureByte)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
 			return
+		}
+		if pictureByte != nil {
+			project.Picture = base64.StdEncoding.EncodeToString(pictureByte)
 		}
 		projectData = append(projectData, project)
 	}
@@ -76,19 +83,32 @@ func EditProjects(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 	}
 }
 
-func CreateNewProject(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func CreateNewProject(w http.ResponseWriter, r *http.Request, db *sql.DB) error {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
+		return nil
 	}
 
-	_, err := db.Exec("INSERT INTO projects (title, description, link) VALUES (?, ?, ?)", "", "", "")
+	//open the default profile picture
+	file, err := os.Open("img/projectImg.jpg")
+	if err != nil {
+		return fmt.Errorf("error opening image: %v", err)
+	}
+	defer file.Close()
+
+	//read the image
+	PictureDefault, err := io.ReadAll(file)
+	if err != nil {
+		return fmt.Errorf("error reading image: %v", err)
+	}
+
+	_, err = db.Exec("INSERT INTO projects (title, description, link, picture) VALUES (?, ?, ?, ?)", "", "", "", PictureDefault)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Error creating a new project: %v", err), http.StatusInternalServerError)
-		return
+		return nil
 	}
-
 	http.Redirect(w, r, "/editProjects", http.StatusSeeOther)
+	return nil
 }
 
 func UpdateUserInfo(w http.ResponseWriter, r *http.Request, db *sql.DB) {
@@ -157,7 +177,13 @@ func UpdateProjects(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 		return
 	}
 
-	file, _, err := r.FormFile("profilePicture")
+	id := r.FormValue("id")
+	if id == "" {
+		http.Error(w, "Error: no id provided", http.StatusInternalServerError)
+		return
+	}
+
+	file, _, err := r.FormFile("picture")
 	if err != nil {
 		if err != http.ErrMissingFile {
 			http.Error(w, fmt.Sprintf("Error retrieving the file: %v", err), http.StatusInternalServerError)
@@ -171,27 +197,36 @@ func UpdateProjects(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 			http.Error(w, fmt.Sprintf("Error reading the file: %v", err), http.StatusInternalServerError)
 			return
 		}
-		_, err = db.Exec("UPDATE user SET pp=?", fileBytes)
+		_, err = db.Exec("UPDATE projects SET picture=? WHERE id=?", fileBytes, id)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Error updating the profile picture: %v", err), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("Error updating the project picture: %v", err), http.StatusInternalServerError)
 			return
 		}
 	}
 
-	username := r.FormValue("username")
-	if username != "" {
-		_, err = db.Exec("UPDATE user SET username=?", username)
+	title := r.FormValue("title")
+	if title != "" {
+		_, err = db.Exec("UPDATE projects SET title=? WHERE id=?", title, id)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Error updating the username: %v", err), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("Error updating the title: %v", err), http.StatusInternalServerError)
 			return
 		}
 	}
 
-	email := r.FormValue("email")
-	if email != "" {
-		_, err = db.Exec("UPDATE user SET email=?", email)
+	description := r.FormValue("description")
+	if description != "" {
+		_, err = db.Exec("UPDATE projects SET description=? WHERE id=?", description, id)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Error updating the email: %v", err), http.StatusInternalServerError)
+			http.Error(w, fmt.Sprintf("Error updating the description: %v", err), http.StatusInternalServerError)
+			return
+		}
+	}
+
+	link := r.FormValue("link")
+	if link != "" {
+		_, err = db.Exec("UPDATE projects SET link=? WHERE id=?", link, id)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error updating the link: %v", err), http.StatusInternalServerError)
 			return
 		}
 	}

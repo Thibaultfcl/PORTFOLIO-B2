@@ -9,7 +9,6 @@
         body{
         background: linear-gradient(to top,  #feb47b,#37546a );
         height: 94vh;
-       
         }
     </style>
 </head>
@@ -25,9 +24,11 @@
                         <h5 class="card-title">{{.Title}}</h5>
                         <p class="card-text">{{.Description}}</p>
                         <button class="btn btn-primary select-project" 
+                                data-id="{{.Id}}"
                                 data-title="{{.Title}}" 
                                 data-description="{{.Description}}" 
-                                data-link="{{.Link}}">
+                                data-link="{{.Link}}"
+                                data-picture="{{.Picture}}">
                             Edit Project
                         </button>
                     </div>
@@ -41,7 +42,8 @@
             </div>
         </div>
 
-        <form id="editProjectForm" action="/updateProjectInfo" method="post" style="display: none;">
+        <form id="editProjectForm" action="/updateProjects" method="post" enctype="multipart/form-data" style="display: none;">
+            <input type="hidden" id="projectId" name="id">
             <div class="mb-3">
                 <label for="title" class="form-label">Title :</label>
                 <input type="text" class="form-control" id="title" name="title">
@@ -53,6 +55,11 @@
             <div class="mb-3">
                 <label for="link" class="form-label">Link :</label>
                 <input type="url" class="form-control" id="link" name="link">
+            </div>
+            <div class="mb-3">
+                <label for="picture" class="form-label">Picture :</label>
+                <input type="file" class="form-control" id="picture" name="picture">
+                <img id="img" class="img-thumbnail mt-2" width="100">
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
         </form>
