@@ -11,7 +11,15 @@
 
 <body>
     <div class="container mt-5">
-        <h2 class="mb-4">Edit User Data</h2>
+        <div class="row gx-4 gx-lg-5 mt-3 mb-3">
+            <div class="col-md-2">
+                <form action="/admin" method="post">
+                <button type="submit" class="btn btn-dark" id="index">
+                    <h2>Back</h2>
+                </button>
+                </form>
+            </div>
+        </div>
         <form action="/updateUserInfo" method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="username" class="form-label">Username :</label>
