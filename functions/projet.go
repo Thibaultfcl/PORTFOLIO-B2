@@ -2,53 +2,43 @@ package functions
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 )
 
-func mod(a, b int) int {
-	return a % b
-}
-func add(a, b int) int {
-    return a + b
-}
-
 func Projet(w http.ResponseWriter, r *http.Request, db *sql.DB) {
-    var projectData []ProjectData
-    rows, err := db.Query("SELECT title, description, link FROM projects")
-    if err != nil {
-        http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
-        return
-    }
-    defer rows.Close()
-    for rows.Next() {
-        var project ProjectData
-        err := rows.Scan(&project.Title, &project.Description, &project.Link)
-        if err != nil {
-            http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
-            return
-        }
-        projectData = append(projectData, project)
-    }
+	var projectsData []ProjectData
+	rows, err := db.Query("SELECT title, description, link, picture FROM projects")
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var project ProjectData
+		var pictureByte []byte
+		err := rows.Scan(&project.Title, &project.Description, &project.Link, &pictureByte)
+		if err != nil {
+			http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
+			return
+		}
 
-    // Create a new template and add the custom function
-    tmpl := template.New("projet.html").Funcs(template.FuncMap{
-        "mod": mod,
-		"add": add,
-		
-    })
+		if pictureByte != nil {
+			project.Picture = base64.StdEncoding.EncodeToString(pictureByte)
+		}
 
-    // Parse the template file
-    tmpl, err = tmpl.ParseFiles("tmpl/projet.html")
-    if err != nil {
-        http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
-        return
-    }
+		projectsData = append(projectsData, project)
+	}
 
-    // Execute the template with the project data
-    err = tmpl.Execute(w, projectData)
-    if err != nil {
-        http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
-    }
+	tmpl, err := template.ParseFiles("tmpl/projet.html")
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error: %v", err), http.StatusInternalServerError)
+		return
+	}
+	if err := tmpl.Execute(w, projectsData); err != nil {
+		log.Printf("Error executing template: %v", err)
+	}
 }

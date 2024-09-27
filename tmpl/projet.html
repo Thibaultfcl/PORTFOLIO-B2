@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="../css/nav.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
 </head>
 
@@ -33,17 +33,15 @@
   <section>
     <div class="container">
       <div class="row">
-        {{range $index, $project := .}}
-          <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="square">
-              <h3 class="project-title">{{$project.Title}}</h3>
-              <p classe="description">{{$project.Description}}</p>
-              <a classe="link" href="{{$project.Link}}">Voir le projet</a>
-            </div>
+        {{range .}}
+        <div class="col-md-4 col-sm-6 col-xs-12">
+          <div class="square"
+            style="background-image: url('data:image/jpeg;base64,{{.Picture}}'); background-size: cover; background-repeat: no-repeat; background-size: 100% 100%; background-position: center;">
+            <h3 class="project-title">{{.Title}}</h3>
+            <p classe="description" style="color: #fff;">{{.Description}}</p>
+            <a classe="link" href="{{.Link}}" target="_blank">Voir le projet</a>
           </div>
-          {{if eq (mod (add $index 1) 3) 0}}
-            </div><div class="row">
-          {{end}}
+        </div>
         {{end}}
       </div>
     </div>
