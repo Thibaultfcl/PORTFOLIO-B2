@@ -61,7 +61,6 @@ nav ul li a {
 
 a.active,
 a:hover {
-  background: #37546a;
   transition: .5s;
 }
 #check:checked ~ ul {
@@ -119,6 +118,7 @@ a:hover {
   }
 
   .square {
+    margin-top: 100px;
     width: 100%; /* Full width within the column */
     padding-bottom: 100%; /* This makes the div a square */
     background-color: #ccc; /* Change this to your desired color */
@@ -134,18 +134,22 @@ a:hover {
 
   .project-title {
     margin: 0;
-    padding-top: 10px; /* Adjust as needed */
+    padding-top: 10px;
+    color: #fff;
   }
 
   .description {
-    margin: 10px 0; /* Adjust as needed */
+    margin: 10px 0;
+    color: #fff;
   }
 
   .link {
     position: absolute;
-    bottom: 10px; /* Adjust as needed */
+    bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
+    text-decoration: none;
+    color: #fff;
   }
   
 @media (max-width: 1050px) {
