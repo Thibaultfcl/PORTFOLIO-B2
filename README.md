@@ -12,3 +12,6 @@ FRESCALINE Thibault
 
 - Run this command in your terminal : `go run .\main.go`
 - Then you can access the forum troughth this link [localhost:8080/home](http://localhost:8080/home)
+
+## PASSWORD ADMIN/EDIT
+admin
