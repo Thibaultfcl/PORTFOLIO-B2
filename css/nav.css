@@ -30,6 +30,11 @@ nav {
   top: 0;
 }
 
+h3 {  
+ 
+  padding: 0 100px;
+  
+}
 label.logo {
   color: white;
   font-size: 25px;
@@ -62,7 +67,9 @@ nav ul li a {
 a.active,
 a:hover {
   transition: .5s;
+  background-color: #37546a;
 }
+
 #check:checked ~ ul {
   left: 0;
 }
